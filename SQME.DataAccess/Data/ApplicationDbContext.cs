@@ -15,6 +15,8 @@ namespace SQME.DataAccess.Data
 
         }
 
+        public DbSet<Customer> Customers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
