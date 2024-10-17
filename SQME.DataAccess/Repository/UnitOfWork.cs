@@ -13,11 +13,13 @@ namespace SQME.DataAccess.Repository
         private readonly ApplicationDbContext _db;
 
         public ICustomerRepository Customer { get; private set; }
+        public ISKURepository SKU { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
             Customer = new CustomerRepository(_db);
+            SKU = new SKURepository(_db);
         }
 
         public void Save()

@@ -1,34 +1,29 @@
-﻿@model Customer
+﻿@model SKU
 
-<div class="modal fade" id="customerModal-@Model.ID" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+<div class="modal fade" id="skuModal-@Model.ID" tabindex="-1" aria-labelledby="skuModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="customerModalLabel">@(Model.ID == 0 ? "Create Customer" : "Edit Customer")</h1>
+                <h1 class="modal-title fs-5" id="skuModalLabel">@(Model.ID == 0 ? "Create SKU" : "Edit SKU")</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-start" id="customerModalBody">
-                <form asp-action="Upsert" asp-controller="Customer" method="post">
+                <form asp-action="Upsert" asp-controller="SKU" method="post">
                     <input type="hidden" asp-for="ID" />
                     <div class="form-group pt-2">
-                        <label asp-for="FirstName"></label>
-                        <input asp-for="FirstName" class="form-control" />
-                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <div class="form-group pt-2">
-                        <label asp-for="LastName"></label>
-                        <input asp-for="LastName" class="form-control" />
-                        <span asp-validation-for="LastName" class="text-danger"></span>
+                        <label asp-for="Code"></label>
+                        <input asp-for="Code" class="form-control" />
+                        <span asp-validation-for="Code" class="text-danger"></span>
                     </div>
                     <div class="form-group pt-2">
-                        <label asp-for="MobileNumber"></label>
-                        <input asp-for="MobileNumber" class="form-control" />
-                        <span asp-validation-for="MobileNumber" class="text-danger"></span>
-                    </div>
-                    <div class="form-group pt-2">
-                        <label asp-for="City"></label>
-                        <input asp-for="City" class="form-control" />
-                        <span asp-validation-for="City" class="text-danger"></span>
+                        <label asp-for="UnitPrice"></label>
+                        <input asp-for="UnitPrice" class="form-control" />
+                        <span asp-validation-for="UnitPrice" class="text-danger"></span>
                     </div>
                     <div class="form-group pt-2 pb-2">
                         <input asp-for="IsActive" class="form-check-input text-start" />
@@ -43,7 +38,7 @@
                 @if (Model.ID != 0)
                 {
                     <div class="modal-footer">
-                        <form asp-action="Delete" asp-controller="Customer" method="post">
+                        <form asp-action="Delete" asp-controller="SKU" method="post">
                             <input type="hidden" asp-for="ID" />
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
