@@ -28,7 +28,6 @@ namespace SQME.Models
 
         [Required]
         [RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile number must be 10 digits")]
-        [Index(IsUnique = true)]
         [Display(Name = "Mobile Number")]
         public string? MobileNumber { get; set; }
 

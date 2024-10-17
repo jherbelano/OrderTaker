@@ -1,5 +1,6 @@
 ﻿using SQME.DataAccess.Data;
 using SQME.DataAccess.Repository.Contracts;
+using SQME.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,21 +9,18 @@ using System.Threading.Tasks;
 
 namespace SQME.DataAccess.Repository
 {
-    public class UnitOfWork : IUnitOfWork
+    public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
         private readonly ApplicationDbContext _db;
 
-        public ICustomerRepository Customer { get; private set; }
-
-        public UnitOfWork(ApplicationDbContext db)
+        public CustomerRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
-            Customer = new CustomerRepository(_db);
         }
 
-        public void Save()
+        public void Update(Customer obj)
         {
-            _db.SaveChanges();
+            _db.Customers.Update(obj);
         }
     }
 }
