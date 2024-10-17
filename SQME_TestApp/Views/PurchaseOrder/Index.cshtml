@@ -1,10 +1,10 @@
-﻿@model List<Customer>
+﻿@model List<PurchaseOrder>
 
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-1">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">Customers</h2>
+                <h2 class="text-white py-2">Orders</h2>
             </div>
         </div>
     </div>
@@ -12,10 +12,9 @@
         <div class="container">
             <div class="row pb-3">
                 <div class="col-12">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerModal-0" data-url="@Url.Action("Upsert")">
-                        Create
-                    </button>
-                    <partial name="_Upsert" model="new Customer()" />
+                    <a asp-controller="PurchaseOrder" asp-action="Upsert" class="btn btn-primary">
+                        Create New
+                    </a>
                 </div>
             </div>
 
@@ -23,44 +22,42 @@
                 <thead>
                     <tr>
                         <th>
-                            Fullname
+                            Customer
                         </th>
                         <th>
-                            Mobile Number
+                            Delivery Date
                         </th>
                         <th>
-                            City
+                            Status
                         </th>
                         <th>
-                            IsActive
+                            Amount Due
                         </th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var obj in Model.OrderBy(c => c.FullName))
+                    @foreach (var obj in Model.OrderBy(p => p.DateOfDelivery))
                     {
                         <tr>
                             <td>
-                                @obj.FullName
+                                @(obj.Customer?.FullName ?? "N/A")
                             </td>
                             <td>
-                                @obj.MobileNumber
+                                @obj.DateOfDelivery.ToString()
                             </td>
                             <td>
-                                @obj.City
+                                @obj.Status
                             </td>
                             <td>
-                                @obj.IsActive
+                                @obj.AmountDue
                             </td>
                             <td>
                                 <div class="w-75 btn-group" role="group">
-                                    <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#customerModal-@obj.ID" data-url="@Url.Action($"Upsert/{obj.ID}")">
+                                    <a asp-controller="PurchaseOrder" asp-action="Upsert" asp-route-id="@obj.ID" class="btn btn-primary mx-2">
                                         Edit
-                                    </button>
-                                    @await Html.PartialAsync("_Upsert", obj)
+                                    </a>
                                 </div>
-
                             </td>
                         </tr>
                     }
@@ -69,7 +66,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

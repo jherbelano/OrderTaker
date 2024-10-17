@@ -11,7 +11,7 @@
     <div class="card-body">
         <div class="container">
             <div class="row pb-3">
-                <div class="col-12 text-end">
+                <div class="col-12">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#skuModal-0" data-url="@Url.Action("Upsert")">
                         Create
                     </button>
@@ -38,7 +38,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var obj in Model.OrderBy(c => c.Name))
+                    @foreach (var obj in Model.OrderBy(s => s.Name))
                     {
                         <tr>
                             <td>

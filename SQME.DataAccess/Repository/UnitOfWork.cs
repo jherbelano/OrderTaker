@@ -14,12 +14,14 @@ namespace SQME.DataAccess.Repository
 
         public ICustomerRepository Customer { get; private set; }
         public ISKURepository SKU { get; private set; }
+        public IPurchaseOrderRepository PurchaseOrder { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
             Customer = new CustomerRepository(_db);
             SKU = new SKURepository(_db);
+            PurchaseOrder = new PurchaseOrderRepository(_db);
         }
 
         public void Save()

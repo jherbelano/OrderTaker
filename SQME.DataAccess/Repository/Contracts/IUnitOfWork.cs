@@ -10,6 +10,7 @@ namespace SQME.DataAccess.Repository.Contracts
     {
         ICustomerRepository Customer { get; }
         ISKURepository SKU { get; }
+        IPurchaseOrderRepository PurchaseOrder { get; }
         
         void Save();
     }
