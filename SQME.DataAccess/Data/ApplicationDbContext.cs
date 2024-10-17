@@ -18,6 +18,7 @@ namespace SQME.DataAccess.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<SKU> SKUs { get; set; }
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public DbSet<PurchaseOrderItems> PurchaseOrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
