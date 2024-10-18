@@ -5,7 +5,7 @@
             <div class="col-12 text-center">
                 <h2 class="text-white py-2">@(Model.PurchaseOrder.ID != 0 ? "Edit Order" : "Order Taking")</h2>
             </div>
-           
+
         </div>
     </div>
     <div class="card-body p-4">
@@ -13,7 +13,7 @@
             <input asp-for="PurchaseOrder.ID" hidden />
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="form-group p-3">
                             <label asp-for="PurchaseOrder.CustomerID" class="pb-1"></label>
                             <select asp-for="PurchaseOrder.CustomerID" asp-items="@Model.CustomerList" class="form-select border-0 shadow">
@@ -39,23 +39,22 @@
                         </div>
                     </div>
 
-                    @* <div class="col-md-6">
-                    <div class="form-group p-3">
-                    <label class="pb-1">SKU</label>
-                    <select asp-for="SKU.ID" asp-items="@Model.SKUList" class="form-select border-0 shadow" id="skuSelect">
-                    <option disabled selected>--Select SKU--</option>
-                    </select>
-                    </div>
-                    <div class="form-group p-3">
-                    <label class="pb-1">Quantity</label>
-                    <input type="number" id="quantity" class="form-control border-0 shadow" />
-                    </div>
-                    <div class="form-group p-3">
-                    <label class="pb-1">SubTotal</label>
-                    <input type="text" id="subtotal" class="form-control border-0 shadow" readonly />
-                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group p-3">
+                            <label class="pb-1">SKU</label>
+                            <input type="text" id="skuAutocomplete" class="form-control border-0 shadow" placeholder="Type to search SKU...">
+                            <input type="hidden" id="skuId">
+                        </div>
+                        <div class="form-group p-3">
+                            <label class="pb-1">Quantity</label>
+                            <input type="number" id="quantity" class="form-control border-0 shadow" />
+                        </div>
+                        <div class="form-group p-3">
+                            <label class="pb-1">SubTotal</label>
+                            <input type="text" id="subtotal" class="form-control border-0 shadow" readonly />
+                        </div>
 
-                    </div> *@
+                    </div>
                     <div class="col-12  p-3">
                         <button type="button" class="btn btn-primary mx-3" id="addItemButton">Add Item</button>
                     </div>
@@ -71,10 +70,10 @@
                         </tr>
                     </thead>
                     <tbody id="itemList">
-                        @if (Model.PurchaseOrder.ID != 0 && Model.PurchaseOrder.PurchaseOrderItems!=null)
+                        @if (Model.PurchaseOrder.ID != 0 && Model.PurchaseOrder.PurchaseOrderItems != null)
                         {
                             int i = 0;
-                            foreach(var obj in Model.PurchaseOrder.PurchaseOrderItems)
+                            foreach (var obj in Model.PurchaseOrder.PurchaseOrderItems)
                             {
                                 <tr data-skuid="@obj.SKUID" data-quantity="@obj.Quantity" data-price="@obj.Price">
                                     <td>@obj.SKU.Name</td>
@@ -92,7 +91,6 @@
                                 i++;
                             }
                         }
-                        <!-- Dynamically populated items will go here -->
                     </tbody>
                 </table>
                 <input type="hidden" asp-for="PurchaseOrder.AmountDue" id="AmountDue" />
@@ -150,7 +148,7 @@
 </div>
 
 @section scripts {
-  
+
 
     <script>
         var currentEditRow = null;
@@ -191,10 +189,10 @@
                 var quantity = currentEditRow.dataset.quantity;
 
                 fetch(`/PurchaseOrder/GetUnitPrice?skuId=${skuId}`)
-                .then(response => response.json())
-                .then(data => {
+                    .then(response => response.json())
+                    .then(data => {
                         document.getElementById('modalUnitPrice').value = data.unitPrice;
-                });
+                    });
 
                 document.getElementById('modalSkuSelect').value = skuId;
                 document.getElementById('modalQuantity').value = quantity;
@@ -239,20 +237,20 @@
             } else {
                 // Add new row
                 var newRow = `
-                    <tr data-skuid="${skuId}" data-quantity="${quantity}" data-price="${price}">
-                        <td>${skuText}</td>
-                        <td>${quantity}</td>
-                        <td>${price.toFixed(2)}</td>
-                        <td>
-                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].ID" class="hiddenID" value="0" />
-                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].SKUId" class="hiddenSkuId" value="${skuId}" />
-                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].Quantity" class="hiddenQuantity" value="${quantity}" />
-                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].Price" class="hiddenPrice" value="${price}" />
-                            <button type="button" class="btn btn-primary edit-item-button">Edit</button>
-                            <button type="button" class="btn btn-danger remove-item-button">Remove</button>
-                        </td>
-                    </tr>
-                `;
+                                    <tr data-skuid="${skuId}" data-quantity="${quantity}" data-price="${price}">
+                                        <td>${skuText}</td>
+                                        <td>${quantity}</td>
+                                        <td>${price.toFixed(2)}</td>
+                                        <td>
+                                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].ID" class="hiddenID" value="0" />
+                                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].SKUId" class="hiddenSkuId" value="${skuId}" />
+                                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].Quantity" class="hiddenQuantity" value="${quantity}" />
+                                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].Price" class="hiddenPrice" value="${price}" />
+                                            <button type="button" class="btn btn-primary edit-item-button">Edit</button>
+                                            <button type="button" class="btn btn-danger remove-item-button">Remove</button>
+                                        </td>
+                                    </tr>
+                                `;
                 document.getElementById('itemList').insertAdjacentHTML('beforeend', newRow);
             }
 
@@ -281,25 +279,46 @@
             }
         });
 
-        // let unitPrice = 0;
-        // document.getElementById('skuSelect').addEventListener('change', function () {
-        //     var skuId = this.value;
-        //     fetch(`/PurchaseOrder/GetUnitPrice?skuId=${skuId}`)
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             unitPrice = data.unitPrice;
-        //             var quantity = document.getElementById('quantity').value;
-        //             var subtotal = unitPrice * quantity;
-        //             document.getElementById('subtotal').value = subtotal.toFixed(2);
-        //         });
-        // });
+        // SKU Auto Complete
+        var unitPrice = 0;
+        $(function () {
+            var skus = [
+        @foreach (var sku in Model.SKUList)
+        {
+            <text>{label: "@sku.Text", value: "@sku.Value" },</text>
+        }
+                    ];
 
-        // document.getElementById('quantity').addEventListener('input', function () {
-        //     var uPrice = unitPrice || 0;
-        //     var quantity = this.value;
-        //     var subtotal = uPrice * quantity;
-        //     document.getElementById('subtotal').value = subtotal.toFixed(2);
-        // });
+            $("#skuAutocomplete").autocomplete({
+                source: skus,
+                select: function (event, ui) {
+                    $("#skuAutocomplete").val(ui.item.label);
+                    $("#skuId").val(ui.item.value);
+
+                    var skuId = ui.item.value;
+                    fetch(`/PurchaseOrder/GetUnitPrice?skuId=${skuId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            unitPrice = data.unitPrice;
+                            var quantity = $("#quantity").val() || 0;
+                            var subtotal = unitPrice * quantity;
+                            $("#subtotal").val(subtotal.toFixed(2));
+                        });
+
+                    return false;
+                }
+            });
+
+            $("#quantity").on('input', function () {
+                $("#quantity").on('input', function () {
+                    var uPrice = unitPrice || 0;
+                    var quantity = $(this).val() || 0;
+                    var subtotal = uPrice * quantity;
+                    $("#subtotal").val(subtotal.toFixed(2));
+                });
+            });
+        });
+
     </script>
     <partial name="_ValidationScriptsPartial" />
 }
