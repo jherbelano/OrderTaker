@@ -59,7 +59,7 @@ namespace SQME.DataAccess.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("SQME.Models.PurchaseOrder", b =>
@@ -96,7 +96,7 @@ namespace SQME.DataAccess.Migrations
 
                     b.HasIndex("CustomerID");
 
-                    b.ToTable("PurchaseOrders");
+                    b.ToTable("PurchaseOrders", (string)null);
                 });
 
             modelBuilder.Entity("SQME.Models.PurchaseOrderItems", b =>
@@ -125,7 +125,7 @@ namespace SQME.DataAccess.Migrations
 
                     b.HasIndex("SKUID");
 
-                    b.ToTable("PurchaseOrderItems");
+                    b.ToTable("PurchaseOrderItems", (string)null);
                 });
 
             modelBuilder.Entity("SQME.Models.SKU", b =>
@@ -160,7 +160,7 @@ namespace SQME.DataAccess.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("SKUs");
+                    b.ToTable("SKUs", (string)null);
                 });
 
             modelBuilder.Entity("SQME.Models.PurchaseOrder", b =>

@@ -22,7 +22,7 @@ namespace SQME.DataAccess.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+           
         }
     }
 }

@@ -40,7 +40,5 @@ namespace SQME.Models
 
         [Required]
         public bool IsActive { get; set; }
-
-        public ICollection<PurchaseOrder> PurchaseOrders { get; set; }
     }
 }

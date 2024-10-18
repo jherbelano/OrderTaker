@@ -23,6 +23,7 @@ namespace SQME_TestApp.Controllers
         [HttpPost]
         public IActionResult Upsert(SKU obj)
         {
+
             if (ModelState.IsValid)
             {
                 if (obj == null || obj.ID == 0)
@@ -50,7 +51,7 @@ namespace SQME_TestApp.Controllers
         {
             var sku = _unitOfWork.SKU.Get(c => c.ID == id);
 
-            if (sku== null)
+            if (sku == null)
             {
                 return NotFound();
             }

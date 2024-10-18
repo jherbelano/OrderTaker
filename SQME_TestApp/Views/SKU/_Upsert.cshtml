@@ -8,7 +8,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-start" id="customerModalBody">
-                <form asp-action="Upsert" asp-controller="SKU" method="post">
+                <form id="skuForm" asp-action="Upsert" asp-controller="SKU" method="post">
                     <input type="hidden" asp-for="ID" />
                     <div class="form-group pt-2">
                         <label asp-for="Name"></label>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary" id="submit-btn">Save</button>
                     </div>
                 </form>
                 @if (Model.ID != 0)

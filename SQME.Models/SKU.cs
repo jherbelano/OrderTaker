@@ -15,6 +15,7 @@ namespace SQME.Models
 
         [Required]
         [StringLength(100)]
+        [Index(IsUnique = true)]
         public string? Name { get; set; }
 
         [Required]
@@ -23,6 +24,7 @@ namespace SQME.Models
 
         [Required]
         [Display(Name = "Unit Price")]
+        [Index(IsUnique = true)]
         public decimal UnitPrice { get; set; }
 
         [Required]
