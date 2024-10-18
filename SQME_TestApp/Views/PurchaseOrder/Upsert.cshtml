@@ -1,0 +1,305 @@
+﻿@model PurchaseOrderVM
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-1">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">@(Model.PurchaseOrder.ID != 0 ? "Edit Order" : "Order Taking")</h2>
+            </div>
+           
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form asp-action="Upsert" asp-controller="PurchaseOrder" method="post" class="row">
+            <input asp-for="PurchaseOrder.ID" hidden />
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group p-3">
+                            <label asp-for="PurchaseOrder.CustomerID" class="pb-1"></label>
+                            <select asp-for="PurchaseOrder.CustomerID" asp-items="@Model.CustomerList" class="form-select border-0 shadow">
+                                <option disabled selected>--Select Customer--</option>
+                            </select>
+                            <span asp-validation-for="PurchaseOrder.CustomerID" class="text-danger"></span>
+                        </div>
+                        <div class="form-group p-3">
+                            <label asp-for="PurchaseOrder.DateOfDelivery" class="pb-1"></label>
+                            <input asp-for="PurchaseOrder.DateOfDelivery" class="form-control border-0 shadow" />
+                            <span asp-validation-for="PurchaseOrder.DateOfDelivery" class="text-danger"></span>
+                        </div>
+                        <div class="form-group p-3">
+                            <label asp-for="PurchaseOrder.Status" class="pb-1"></label>
+                            <select asp-for="PurchaseOrder.Status" asp-items="@Model.StatusList" class="form-select border-0 shadow" id="orderStatus">
+                                <option disabled selected>--Select Order Status--</option>
+                            </select>
+                            <span asp-validation-for="PurchaseOrder.Status" class="text-danger"></span>
+                        </div>
+                        <div class="form-group p-3">
+                            <input asp-for="PurchaseOrder.IsActive" class="form-check-input" />
+                            <label asp-for="PurchaseOrder.IsActive"></label>
+                        </div>
+                    </div>
+
+                    @* <div class="col-md-6">
+                    <div class="form-group p-3">
+                    <label class="pb-1">SKU</label>
+                    <select asp-for="SKU.ID" asp-items="@Model.SKUList" class="form-select border-0 shadow" id="skuSelect">
+                    <option disabled selected>--Select SKU--</option>
+                    </select>
+                    </div>
+                    <div class="form-group p-3">
+                    <label class="pb-1">Quantity</label>
+                    <input type="number" id="quantity" class="form-control border-0 shadow" />
+                    </div>
+                    <div class="form-group p-3">
+                    <label class="pb-1">SubTotal</label>
+                    <input type="text" id="subtotal" class="form-control border-0 shadow" readonly />
+                    </div>
+
+                    </div> *@
+                    <div class="col-12  p-3">
+                        <button type="button" class="btn btn-primary mx-3" id="addItemButton">Add Item</button>
+                    </div>
+                </div>
+
+                <table class="table table-bordered table-striped text-center mx-3">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemList">
+                        @if (Model.PurchaseOrder.ID != 0 && Model.PurchaseOrder.PurchaseOrderItems!=null)
+                        {
+                            int i = 0;
+                            foreach(var obj in Model.PurchaseOrder.PurchaseOrderItems)
+                            {
+                                <tr data-skuid="@obj.SKUID" data-quantity="@obj.Quantity" data-price="@obj.Price">
+                                    <td>@obj.SKU.Name</td>
+                                    <td>@obj.Quantity</td>
+                                    <td>@obj.Price</td>
+                                    <td>
+                                        <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[@i].ID" class="hiddenID" value="@obj.ID" />
+                                        <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[@i].SKUID" class="hiddenSkuId" value="@obj.SKUID" />
+                                        <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[@i].Quantity" class="hiddenQuantity" value="@obj.Quantity" />
+                                        <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[@i].Price" class="hiddenPrice" value="@obj.Price" />
+                                        <button type="button" class="btn btn-primary edit-item-button">Edit</button>
+                                        <button type="button" class="btn btn-danger remove-item-button">Remove</button>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                        <!-- Dynamically populated items will go here -->
+                    </tbody>
+                </table>
+                <input type="hidden" asp-for="PurchaseOrder.AmountDue" id="AmountDue" />
+                <span asp-validation-for="PurchaseOrder.PurchaseOrderItems" class="text-danger"></span>
+                <div class="total-amount pt-3">
+                    <h4 class="mx-3">Total Amount: <span id="totalAmount">0.00</span></h4>
+                </div>
+                <button type="submit" class="btn btn-primary mx-3 my-3">@(Model.PurchaseOrder.ID != 0 ? "Update" : "Create")</button>
+                <a asp-controller="PurchaseOrder" asp-action="Index" class="btn btn-outline-secondary">Back to list</a>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="itemModalLabel">Add Item</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-start" id="itemModalBody">
+
+                <div class="form-group pt-3">
+                    <label class="pb-1">SKU</label>
+                    <select id="modalSkuSelect" class="form-select border-0 shadow">
+                        <option value="" disabled selected>--Select SKU--</option>
+                        @if (Model.SKUList != null)
+                        {
+                            foreach (var sku in Model.SKUList)
+                            {
+                                <option value="@sku.Value">@sku.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group pt-3">
+                    <label class="pb-1">Quantity</label>
+                    <input type="number" id="modalQuantity" class="form-control border-0 shadow" />
+                </div>
+                <div class="form-group pt-3 pb-2">
+                    <label class="pb-1">Unit Price</label>
+                    <input type="text" id="modalUnitPrice" class="form-control border-0 shadow" readonly />
+                </div>
+                <input type="hidden" id="modalRowIndex" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="addModalItemButton">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+  
+
+    <script>
+        var currentEditRow = null;
+        updateTotalAmount();
+        document.getElementById('orderStatus').addEventListener('change', function () {
+            var status = this.value;
+            console.log(status);
+        });
+
+        //Get SKU Unit price
+        document.getElementById('modalSkuSelect').addEventListener('change', function () {
+            var skuId = this.value;
+            fetch(`/PurchaseOrder/GetUnitPrice?skuId=${skuId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('modalUnitPrice').value = data.unitPrice.toFixed(2);
+                });
+        });
+
+        // Open Modal for Adding Item
+        document.getElementById('addItemButton').addEventListener('click', function () {
+            document.getElementById('modalSkuSelect').value = '';
+            document.getElementById('modalQuantity').value = '';
+            document.getElementById('modalUnitPrice').value = '';
+            document.getElementById('modalRowIndex').value = '';
+            currentEditRow = null;
+            document.getElementById('itemModalLabel').innerText = 'Add Item';
+            document.getElementById('addModalItemButton').innerText = 'Add';
+            var myModal = new bootstrap.Modal(document.getElementById('itemModal'));
+            myModal.show();
+        });
+
+        // Open Modal for Editing Item
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('edit-item-button')) {
+                currentEditRow = e.target.closest('tr');
+                var skuId = currentEditRow.dataset.skuid;
+                var quantity = currentEditRow.dataset.quantity;
+
+                fetch(`/PurchaseOrder/GetUnitPrice?skuId=${skuId}`)
+                .then(response => response.json())
+                .then(data => {
+                        document.getElementById('modalUnitPrice').value = data.unitPrice;
+                });
+
+                document.getElementById('modalSkuSelect').value = skuId;
+                document.getElementById('modalQuantity').value = quantity;
+                document.getElementById('modalRowIndex').value = currentEditRow.rowIndex;
+
+                document.getElementById('itemModalLabel').innerText = 'Edit Item';
+                document.getElementById('addModalItemButton').innerText = 'Update';
+                var myModal = new bootstrap.Modal(document.getElementById('itemModal'));
+                myModal.show();
+            }
+        });
+
+        // Add or Update Item
+        document.getElementById('addModalItemButton').addEventListener('click', function () {
+            var skuId = document.getElementById('modalSkuSelect').value;
+            var skuText = document.getElementById('modalSkuSelect').options[document.getElementById('modalSkuSelect').selectedIndex].text;
+            var quantity = document.getElementById('modalQuantity').value;
+            var unitPrice = document.getElementById('modalUnitPrice').value;
+            var price = unitPrice * quantity;
+            if (!skuId) {
+                alert("Please select an SKU.");
+                return;
+            }
+
+            if (!quantity || quantity <= 0) {
+                alert("Please enter a valid quantity.");
+                return;
+            }
+
+            if (currentEditRow) {
+                // Update existing row
+                currentEditRow.cells[0].innerText = skuText;
+                currentEditRow.cells[1].innerText = quantity;
+                currentEditRow.cells[2].innerText = price.toFixed(2);
+                currentEditRow.dataset.skuid = skuId;
+                currentEditRow.dataset.quantity = quantity;
+                currentEditRow.dataset.price = price;
+
+                currentEditRow.querySelector('.hiddenSkuId').value = skuId;
+                currentEditRow.querySelector('.hiddenQuantity').value = quantity;
+                currentEditRow.querySelector('.hiddenPrice').value = price;
+            } else {
+                // Add new row
+                var newRow = `
+                    <tr data-skuid="${skuId}" data-quantity="${quantity}" data-price="${price}">
+                        <td>${skuText}</td>
+                        <td>${quantity}</td>
+                        <td>${price.toFixed(2)}</td>
+                        <td>
+                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].ID" class="hiddenID" value="0" />
+                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].SKUId" class="hiddenSkuId" value="${skuId}" />
+                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].Quantity" class="hiddenQuantity" value="${quantity}" />
+                            <input type="hidden" name="PurchaseOrder.PurchaseOrderItems[${document.querySelectorAll('#itemList tr').length}].Price" class="hiddenPrice" value="${price}" />
+                            <button type="button" class="btn btn-primary edit-item-button">Edit</button>
+                            <button type="button" class="btn btn-danger remove-item-button">Remove</button>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('itemList').insertAdjacentHTML('beforeend', newRow);
+            }
+
+            updateTotalAmount();
+
+            var myModal = bootstrap.Modal.getInstance(document.getElementById('itemModal'));
+            myModal.hide();
+        });
+
+        // Update Total Amount
+        function updateTotalAmount() {
+            var totalAmount = 0;
+            document.querySelectorAll('#itemList tr').forEach(function (row) {
+                var subtotal = parseFloat(row.cells[2].innerText);
+                totalAmount += subtotal;
+            });
+            document.getElementById('totalAmount').innerText = totalAmount.toFixed(2);
+            document.getElementById('AmountDue').value = totalAmount.toFixed(2);
+        }
+
+        // Remove Item from List
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('remove-item-button')) {
+                e.target.closest('tr').remove();
+                updateTotalAmount();
+            }
+        });
+
+        // let unitPrice = 0;
+        // document.getElementById('skuSelect').addEventListener('change', function () {
+        //     var skuId = this.value;
+        //     fetch(`/PurchaseOrder/GetUnitPrice?skuId=${skuId}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             unitPrice = data.unitPrice;
+        //             var quantity = document.getElementById('quantity').value;
+        //             var subtotal = unitPrice * quantity;
+        //             document.getElementById('subtotal').value = subtotal.toFixed(2);
+        //         });
+        // });
+
+        // document.getElementById('quantity').addEventListener('input', function () {
+        //     var uPrice = unitPrice || 0;
+        //     var quantity = this.value;
+        //     var subtotal = uPrice * quantity;
+        //     document.getElementById('subtotal').value = subtotal.toFixed(2);
+        // });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

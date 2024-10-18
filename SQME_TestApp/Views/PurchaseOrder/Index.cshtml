@@ -41,13 +41,13 @@
                     {
                         <tr>
                             <td>
-                                @(obj.Customer?.FullName ?? "N/A")
+                                @obj.Customer.FullName
                             </td>
                             <td>
-                                @obj.DateOfDelivery.ToString()
+                                @obj.DateOfDelivery.ToString("dd-MMM-yy")
                             </td>
                             <td>
-                                @obj.Status
+                                @Enum.GetName(typeof(OrderStatus), obj.Status)
                             </td>
                             <td>
                                 @obj.AmountDue

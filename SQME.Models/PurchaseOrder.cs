@@ -24,8 +24,7 @@ namespace SQME.Models
         public DateTime DateOfDelivery { get; set; }
 
         [Required]
-        [StringLength(20)]
-        public OrderStatus Status { get; set; }
+        public int Status { get; set; }
 
         [Required]
         [Display(Name = "Amount Due")]
@@ -37,6 +36,9 @@ namespace SQME.Models
 
         [Required]
         public bool IsActive { get; set; }
+
+        [Required(ErrorMessage = "Order item is required.")]
+        public ICollection<PurchaseOrderItems>? PurchaseOrderItems { get; set; }
 
         public static ValidationResult? ValidateDateOfDelivery(DateTime dateOfDelivery, ValidationContext context)
         {
